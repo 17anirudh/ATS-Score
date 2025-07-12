@@ -48,7 +48,7 @@
       color: azure;
       margin: 0vw 0vw 2vw 0vw;
       height: 5vh;
-      border: 2px solid rebeccapurple;
+      border: 2px 0px 2px 0px solid rebeccapurple;
       cursor: pointer;
       transition: all ease-in-out 1s;
     }
@@ -60,7 +60,7 @@
   </style>
 </head>
 <body x-data="{ name: '', age: null, file: null }">
-  <form name="form_name" method="post" enctype="multipart/form-data" @submit.prevent="submitForm">
+  <form name="form_name" method="post" enctype="multipart/form-data" @submit.prevent="submitForm()">
       <label for="name_input">Name:
         <input type="text" name="name" id="name_input" x-model="name">
       </label>
@@ -68,7 +68,7 @@
         <input type="number" name="age" id="age_input" x-model.number="age">
       </label>
       <label for="file_input">File:
-        <input type="file" name="file" id="file_input" x-model="file" required>
+        <input type="file" name="file" id="file_input" @change="file = $event.target.files[0]" required>
       </label>
       <button type="submit">Submit</button>
   </form>
@@ -89,8 +89,9 @@
 
         formData.append('name', this.name);
         formData.append('age', this.age);
-        if (this.file && this.file.length > 0) {
-            formData.append('file', this.file[0]); 
+        
+        if (this.file) {
+            formData.append('file', this.file); 
         }
 
         fetch('/hello', {
@@ -99,7 +100,7 @@
         })
         .then(response =>{
             if(!response.ok){
-                throw new Error('HTTP error!, status: , ${response.status}');
+                throw new Error('HTTP error!, status: ' + response.status);
             }
             return response.json(); 
         })
@@ -107,6 +108,7 @@
             reaction = data
         )
         .catch(error => {
+            throw new Error('Network error: ' + error.message)
             console.error('Error:', error);
         });
     }
