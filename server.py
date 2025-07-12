@@ -22,15 +22,13 @@ def getData():
             print(f"File saved: {f.filename} at {file_path}")
         
             return jsonify({
-                "name": "Anirudh",
-                "age": 20,
+                "status": "success"
             })
             
         else:
             print("No file uploaded or empty filename")
             return jsonify({
-                "name": "Anirudh", 
-                "age": 20,
+                "status": "error"
             })
         
     except Exception as e:
