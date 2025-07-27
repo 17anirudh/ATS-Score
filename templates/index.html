@@ -1,142 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-    <style>
-      *{
-        margin: 0;
-        padding: 0;
-      }
-      body{
-        background-color: black;
-        color: bisque;
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        width: 100%;
-        align-items: center;
-        justify-content: center;
-      }
-      form{
-        font-size: clamp(1rem, 0.2958rem + 3.0047vw, 3rem);
-        color: #ccc;
-        width: 50%;
-        margin: 0vw 10vw 0vw 10vw;
-        border: 2px solid red;
-        border-radius: 8px;
-        box-sizing: border-box;
-        box-shadow: 0px 4px 8px 0px rgba(165, 18, 18, 0.2);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-      }
-      input[type="file"]{
-        background: transparent;
-        width: 30vw;
-        margin-top: 20px;
-        height: 5vh;
-        border: none;
-      } 
-      textarea{
-        width: 30vw;
-        border: none;
-        background: transparent;
-        color: whitesmoke;
-        border-bottom: 2px solid blue;
-        box-sizing: border-box;
-        box-shadow: 0px 4px 8px 0px rgba(165, 18, 18, 0.2);
-      }
-      button[type="submit"]{
-        background: none;
-        border: none;;
-        color: azure;
-        margin: 0vw 0vw 2vw 0vw;
-        height: 5vh;
-        border-top: 2px solid rebeccapurple;
-        border-bottom: 2px solid rebeccapurple;
-        cursor: pointer;
-        transition: all ease-in-out 1s;
-      }
-      button[type="submit"]:hover{
-        transform: scale(1.2);
-        text-shadow: 0px 0px 10px purple;
-        border: none;
-        border-top: 2px solid rebeccapurple;
-        border-bottom: 2px solid rebeccapurple;
-      }
-      div#after_form{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 50%;
-        margin-top: 20px;
-      }
-    </style>
-    <title>Hybrid</title>
-  </head>
-
-  <body x-data="{ responseData: null }">
-    <form id="form_id" method="post" enctype="multipart/form-data">
-
-        <label for="jd_input">Job description:</label>
-        <textarea id="jd_id" cols="45" rows="10"></textarea>
-
-        <label for="q_input">Qualifications:</label>
-        <textarea id="q_id" cols="45" rows="10"></textarea>
-
-        <label for="f_input">Resume:</label>
-        <input type="file" id="f_id" accept=".txt, .docx, .pdf" required>
-
-        <button type="submit">Submit</button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="static/doc-icon.svg">
+  <title>ATS Check</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Ins</h1>
+  </header>
+  <div class="form-container">
+    <form class="form" name="form" method="post" enctype="multipart/form-data" action="/rate" target="_self">
+        <div class="form-group">
+              <label for="description">Job Description</label>
+              <textarea name="description" rows="10" cols="20" required=""></textarea>
+        </div>
+        <div class="form-group">
+              <label for="qualifications">Qualifications (Only Required Qualifications*)</label>
+              <textarea name="qualifications" rows="10" cols="20" required=""></textarea>
+        </div>
+        <div class="form-group">
+            <span class="title">Upload your Resume</span>
+            <p class="message">Select only (pdf, txt or docx) file to upload.</p>
+            <div class="actions">
+                  <input type="file" accept=".pdf, .txt, .docx" name="resume">
+            </div>
+        </div>
+        <button class="form-submit-btn" type="submit">Submit</button>
     </form>
+  </div>
 
-    <!--
-    <template x-if="responseData"> 
-      <div>
-        <h3>Response:</h3>
-        <p>Status: <span x-text="responseData.status"></span></p>
+  {% if result %}
+    <div class="result">
+      <h2>ATS Score: {{ result.Rating }}</h2>
+      <div class="comment">
+        <h3>Comment:</h3>
+        <p class="s">{{ result.Comment }}</p>
       </div>
-    </template> -->
-    <div id="after_form">
-      <span id="1">15</span>
-      <span id="2">Good</span>
-      <span id="3">Average</span>
+      <div class="strengths">
+        <h3>Strengths:</h3>
+        <p class="s">{{ result.Strengths }}</p>
+      </div>
+      <div class="improvements">
+        <h3>Areas to Improve:</h3>
+        <p class="s">{{ result["Areas to Improve"] }}</p>
+      </div>
     </div>
-
-    <script>
-      document.getElementById('form_id').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData();
-        const fileInput = document.getElementById('f_id');
-        formData.append('job description', document.getElementById('jd_id').value);
-        formData.append('job qualification', document.getElementById('q_id').value);
-        
-        if (fileInput.files[0]) {
-            formData.append('resume', fileInput.files[0]);
-            console.log('File selected:', fileInput.files[0].name);
-        }
-        
-        fetch('/rate', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            const appData = Alpine.$data(document.body);
-            if (appData) {
-                appData.responseData = data;
-            } else {
-                console.error('Alpine data not available');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-      });
-    </script>
-  </body>
+  {% endif %}
+  {% if error %}
+    <div class="error">
+      <p class="s">{{ error }}</p>
+    </div>
+  {% endif %}
+  
+</body>
 </html>
