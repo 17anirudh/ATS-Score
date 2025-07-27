@@ -27,7 +27,6 @@ def response(query: str)-> str:
     }
     response = req.post("http://localhost:11434/api/generate", headers={"Content-Type": "application/json"}, json=payload)
     if response.status_code == 200:
-        print('Success')
         return response.json()
     else:
         print(f"Error: {response.status_code}") 
@@ -68,8 +67,6 @@ def rate() -> render_template:
             res = response(prompt)
             if res and 'response' in res:
                 response_text = json.loads(res['response'])
-                json.dump(response_text, open('test.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=4)
-                print('Sending response........')
                 return render_template('index.html', result=response_text), 200
             else:
                 return render_template('index.html', error="Error processing request"), 500
