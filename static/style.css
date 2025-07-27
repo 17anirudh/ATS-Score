@@ -18,6 +18,11 @@ header{
     align-items: center;
     height: 15vh;
 }
+a.logo{
+    color: aliceblue;
+    text-decoration: none;
+    cursor: pointer;
+}
 .form-container, .result, .error {
     background: linear-gradient(#212121, #212121) padding-box,
                 linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
