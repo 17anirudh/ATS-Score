@@ -3,7 +3,7 @@
 Offline, private, and powerful Resume Analyzer using a local LLM.
 
 ## Overview
-antardvara.ssl is a local and secure ATS analyzer, which takes in job description, qualification and your resume sends it to internal local [gemma3n:e2b](https://ollama.com/library/gemma3n:e2b) based custom model (NorthEye), which analyzes and gives you the result
+**antardvara.ssl** is a local and secure ATS analyzer, which takes in job description, qualification and your resume sends it to internal local [gemma3n:e2b](https://ollama.com/library/gemma3n:e2b) based custom model (NorthEye), which analyzes and gives you the result
 
 ## Screenshot
 ![App Screenshot](/ss.png)
@@ -11,7 +11,9 @@ antardvara.ssl is a local and secure ATS analyzer, which takes in job descriptio
 ## Features
 - Web interface built using Flask (Jinja2) and plain HTML+CSS for smooth user experience
 - Traditional server-side form submission (secure because no exposed API endpoints)
-- Lightweight Flask framwork handles full backend logic
+- Lightweight Flask framework handles full backend logic
+- Simple, minimal UX
+- Completely offline — your data stays on your machine
 
 
 ## Tech Stack
@@ -40,7 +42,7 @@ antardvara.ssl is a local and secure ATS analyzer, which takes in job descriptio
   ```ATS-Score
   ollama create NorthEye:1.0
   ```
-- Congrats, you can now run the local model and application
+- Congrats, you can now run the local model and application, access here - [port:5400](localhost:5400)
   ```ATS-Score
   python app.py
   ```
